@@ -28,14 +28,37 @@ const register = async (req, res) => {
       password: hash_password,
       Posts: [],
     });
-    res
-      .status(200)
-      .send({ 
-        msg: UserCreated, 
-        token: await UserCreated.generateToken(),
-        userid: UserCreated._id.toString()
-      });
+    res.status(200).send({
+      msg: UserCreated,
+      token: await UserCreated.generateToken(),
+      userid: UserCreated._id.toString(),
+    });
   } catch (error) {}
 };
 
-module.exports = { home, register };
+const login = async (req, res) => {
+  try {
+    
+    const { email, password } = req.body;
+    const userExist = await User.findOne({ email });
+    if (!userExist) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+    const user = await bcrypt.compare(password, userExist.password);
+    if (user) {
+      res.status(200).json({
+        msg: "Login Successfull",
+        token: await userExist.generateToken(),
+        userId: userExist._id.toString()
+      })
+    }
+    else{
+      res.status(401).json({msg: "Invalid email or password"});
+    }
+  } 
+  catch (error) {
+    res.status(500).json({msg: "internal sever error"});
+  }
+};
+
+module.exports = { home, register, login };

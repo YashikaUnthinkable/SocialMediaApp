@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
 });
 
 //json web token
-userSchema.methods.generateToken = async ()=>{
+userSchema.methods.generateToken = async function(){
     try {
         return jwt.sign({
             userId: this._id.toString(),

@@ -1,7 +1,8 @@
 require("dotenv").config();
 const express = require("express");
 const {mongoDbConnection} = require("./db/conn.js");
-const router = require("./router/auth.js");
+const authRoute = require("./router/auth.js");
+const contactRount = require("./router/contact.js");
 
 
 const app = express();
@@ -10,7 +11,8 @@ const app = express();
 app.use(express.json());
 
 //using Router
-app.use("/api/auth",router);
+app.use("/api/auth",authRoute);
+app.use("/api/form",contactRount);
 
 //for mongoDB Connection
 mongoDbConnection();
