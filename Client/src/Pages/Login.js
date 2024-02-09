@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
     const [user,setUser] = useState({
         email: "",
         password: ""
     })
+    
+    const nevigate = useNavigate();
 
     const handleInput = (e)=>{
         let newUser = {...user};
@@ -14,9 +17,33 @@ export default function Login() {
         setUser(newUser);
     }
 
-    const handleSubmit = (e)=>{
+    const handleSubmit = async (e)=>{
         e.preventDefault();
         console.log(user);
+        try {
+            const response = await fetch("http://localhost:5000/api/auth/login",{
+                method:"POST",
+                headers:{
+                    "Content-Type": "application/json" 
+                },
+                body: JSON.stringify(user)
+            }    
+            )
+            if(response.ok){
+                setUser({
+                    email: "",
+                    password: ""
+                });
+                alert("Login successful")
+                nevigate("/")
+            }
+            else{
+                alert("Invalid Credentials...")
+            }
+        } catch (error) {
+            console.log(error)
+        }
+        
     }
   return (
     <div>
@@ -28,6 +55,7 @@ export default function Login() {
             alt="not available"
           />
           <div className="col-sm text-left m-5 border">
+            <h2 className="text-primary">Login Form</h2>
             <form onSubmit={handleSubmit}>
               <div className="form-group mt-4">
                 <label htmlFor="email">Email address</label>

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Register() {
     const [user,setUser] = useState({
@@ -6,7 +7,7 @@ export default function Register() {
         email: "",
         password: ""
     })
-
+    const nevigate = useNavigate();
     const handleInput = (e)=>{
         let name = e.target.name;
         let value = e.target.value;
@@ -14,9 +15,30 @@ export default function Register() {
         newUser[name] = value;
         setUser(newUser);
     }
-    const handleSubmit = (e)=>{
+    const handleSubmit = async (e)=>{
         e.preventDefault();
         console.log(user);
+        try {
+            const response = await fetch("http://localhost:5000/api/auth/register",{
+                method:"POST",
+                headers:{
+                    "Content-Type": "application/json" 
+                },
+                body: JSON.stringify(user)
+            });
+            if(response.ok){
+                const res_data = await response.json();
+                setUser({
+                    username: "",
+                    email: "",
+                    password: ""
+                })
+                nevigate("/login")
+            }
+        } catch (error) {
+            console.log(error);
+        }
+        
     }
   return (
     <div className="container ">
@@ -26,7 +48,8 @@ export default function Register() {
           className="h-100 w-50"
           alt="not available"
         />
-        <div className="col-sm text-left m-2">
+        <div className="col-sm text-left m-2 p-3">
+            <h2 className="text-primary">Registration Form</h2>
           <form onSubmit={handleSubmit}>
           <div className="form-group mt-3">
               <label htmlFor="username">Name</label>

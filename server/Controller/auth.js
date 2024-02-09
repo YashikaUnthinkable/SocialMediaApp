@@ -29,7 +29,7 @@ const register = async (req, res) => {
       Posts: [],
     });
     res.status(200).send({
-      msg: UserCreated,
+      msg: "Login Successfull",
       token: await UserCreated.generateToken(),
       userid: UserCreated._id.toString(),
     });

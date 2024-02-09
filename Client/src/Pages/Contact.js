@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState} from 'react';
 
 export default function Contact() {
     const [user,setUser] = useState({
@@ -14,19 +14,42 @@ export default function Contact() {
         newUser[name] = value;
         setUser(newUser);
     }
-    const handleSubmit = (e)=>{
+    const handleSubmit = async (e)=>{
         e.preventDefault();
         console.log(user);
+        try {
+            const response = await fetch("http://localhost:5000/api/form/contact",{
+                method:"POST",
+                headers:{
+                    "Content-Type": "application/json" 
+                },
+                body: JSON.stringify(user)
+            }    
+            );
+            if(response.ok){
+                setUser({
+                    username: "",
+                    email: "",
+                    message: ""
+                });
+
+            }
+        } catch (error) {
+            
+        }
+        
+
     }
   return (
     <div className="container ">
       <div className="row m-5 center">
         <img
-          src="/images/registration.png"
+          src="/images/contact.png"
           className="h-100 w-50"
           alt="not available"
         />
         <div className="col-sm text-left m-2">
+            <h2 className='text-primary'>Contact Form</h2>
           <form onSubmit={handleSubmit}>
           <div className="form-group mt-3">
               <label htmlFor="username">Name</label>
@@ -58,13 +81,13 @@ export default function Contact() {
               />
             </div>
             <div className="form-group mt-3">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">Message</label>
               <textarea 
               name="message" 
               className='form-control'
               id="message" 
-              cols="30" 
-              rows="10"
+              cols="10" 
+              rows="5"
               required
               autoComplete='off'
               value= {user.message}
