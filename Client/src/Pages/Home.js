@@ -1,6 +1,6 @@
 import React from "react";
-import Navbar from "./Components/Navbar";
-import PostList from "./Components/PostList";
+
+import PostList from "../Components/PostList";
 
 const data=[
     {
@@ -92,7 +92,6 @@ export default function Home() {
     
   return (
     <div>
-      <Navbar />
       <div className="d-flex flex-column align-items-center justify-content-center">
         <PostList data={data} />
       </div>

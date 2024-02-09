@@ -17,7 +17,7 @@ export default function Post(props) {
     <div className="shadow-lg col h-50 w-50 bg-white m-2 rounded">
       <img
         src={`/images/${props.post.img}.jpg`}
-        className="row-8 img-fluid p-1"
+        className="row-8 img-fluid p-1 rounded"
         alt="not available"
       />
       <div className="row-4 ">
