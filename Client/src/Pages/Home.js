@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import PostList from "../Components/PostList";
 
-export default function Home() {
+export default function Home(props) {
   const [data,setData] = useState([]);
 
 
@@ -12,9 +12,12 @@ export default function Home() {
       method: "GET"
       }).then(async (response)=>{
         const res_data = await response.json();
+        console.log(res_data);
         if(response.ok){
+          props.setLoggedIn(true);
+          props.setTotalPosts(res_data.totalPosts)
           console.log("ok");
-          setData(res_data)
+          setData(res_data.Posts);
         }
       }
         ).catch((err)=>{console.log(err)});
@@ -28,7 +31,8 @@ export default function Home() {
   return (
     <div>
       <div className="d-flex flex-column align-items-center justify-content-center">
-        <PostList data={data} />
+        <div><h1>total no of posts are: {props.totalPosts}</h1></div>
+        <PostList data={data} setData={setData}/>
       </div>
     </div>
   );

@@ -32,17 +32,17 @@ export default function Contact() {
                     email: "",
                     message: ""
                 });
-
+                alert("your contact is send successfully")
             }
         } catch (error) {
-            
+            console.log(error);
         }
         
 
     }
   return (
     <div className="container ">
-      <div className="row m-5 center">
+      <div className="row m-5 center rounded shadow-lg">
         <img
           src="/images/contact.png"
           className="h-100 w-50"

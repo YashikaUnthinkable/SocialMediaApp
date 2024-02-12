@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
 
-export default function Navbar() {
+
+
+
+export default function Navbar(props) {
+ 
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -27,14 +31,15 @@ export default function Navbar() {
                   Contact
                 </NavLink> 
               </li>
+              
               <li className="nav-item ">
-                <NavLink className="nav-link " to="/register" aria-expanded="false">
-                  SignUp
+                <NavLink className="nav-link " to={props.isLoggedIn? "/logout" : "/register"} aria-expanded="false">
+                  {props.isLoggedIn? "Logout" : "SignUp"}
                 </NavLink>
               </li>
               <li className="nav-item ">
-                <NavLink className="nav-link " to="/login" aria-expanded="false">
-                  SignIn
+                <NavLink className="nav-link " to={props.isLoggedIn? "/profile" : "/login"} aria-expanded="false">
+                {props.isLoggedIn? "Profile" : "Signin"}
                 </NavLink>
               </li>
             </ul>

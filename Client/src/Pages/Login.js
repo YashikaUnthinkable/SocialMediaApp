@@ -18,7 +18,7 @@ export default function Login() {
     }
 
     const handleSubmit = async (e)=>{
-        e.preventDefault();
+        e.preventDefault();//to stop by default reloading
         console.log(user);
         try {
             const response = await fetch("http://localhost:5000/api/auth/login",{
@@ -30,11 +30,12 @@ export default function Login() {
             }    
             )
             if(response.ok){
+               var res_data = await response.json();
                 setUser({
                     email: "",
                     password: ""
                 });
-                alert("Login successful")
+                alert(res_data.token)
                 nevigate("/")
             }
             else{
@@ -48,13 +49,13 @@ export default function Login() {
   return (
     <div>
       <div className="container">
-        <div className="row m-5 center">
+        <div className="row m-5 center p-0 shadow-lg rounded">
           <img
             src="/images/login.png"
-            className="h-100 w-50"
+            className="h-50 w-50"
             alt="not available"
           />
-          <div className="col-sm text-left m-5 border">
+          <div className="col-sm text-left m-5 ">
             <h2 className="text-primary">Login Form</h2>
             <form onSubmit={handleSubmit}>
               <div className="form-group mt-4">

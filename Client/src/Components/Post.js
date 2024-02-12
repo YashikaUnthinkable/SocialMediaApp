@@ -15,12 +15,17 @@ export default function Post(props) {
 
   return (
     <div className="shadow-lg col h-50 w-50 bg-white m-2 rounded">
+      <div className="row-2">
+        <div className="p-3">
+            Posted By- {props.post.postedBy}
+        </div>
+      </div>
       <img
         src={`/images/${props.post.img}.jpg`}
         className="row-8 img-fluid p-1 rounded"
         alt="not available"
       />
-      <div className="row-4 ">
+      <div className="row-2 ">
         <div className="p-3">
           <div
             className="text-danger fs-4 "

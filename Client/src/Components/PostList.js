@@ -7,7 +7,7 @@ export default function PostList(props) {
       props.data.map((post,i)=>{
           return (<Post post={post}
            key={i} 
-           index={i}/>)
+           index={i} data={props.data} setData = {props.setData}/>)
       })
       : <h1>No Post is available...</h1>
   )

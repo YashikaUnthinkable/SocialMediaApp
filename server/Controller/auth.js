@@ -1,6 +1,9 @@
 const User = require("../Models/user-model");
 const bcrypt = require("bcrypt");
 
+
+
+
 const home = async (req, res) => {
   try {
     res.status(200);
@@ -29,7 +32,7 @@ const register = async (req, res) => {
       Posts: [],
     });
     res.status(200).send({
-      msg: "Login Successfull",
+      msg: "registered Successfull",
       token: await UserCreated.generateToken(),
       userid: UserCreated._id.toString(),
     });
@@ -38,26 +41,31 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    
     const { email, password } = req.body;
     const userExist = await User.findOne({ email });
     if (!userExist) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
-    const user = await bcrypt.compare(password, userExist.password);
-    if (user) {
-      res.status(200).json({
-        msg: "Login Successfull",
-        token: await userExist.generateToken(),
-        userId: userExist._id.toString()
-      })
+
+    // Compare plaintext password with hashed password
+    const isPasswordValid = await bcrypt.compare(password, userExist.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Invalid email or password" });
     }
-    else{
-      res.status(401).json({msg: "Invalid email or password"});
-    }
-  } 
-  catch (error) {
-    res.status(500).json({msg: "internal sever error"});
+
+    // Generate token and set it in session
+    const token = await userExist.generateToken();
+    req.session.token = token;
+    console.log(req.session);
+
+    res.status(200).json({
+      msg: "Login Successful",
+      token: token,
+      userId: userExist._id.toString()
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Internal server error" });
   }
 };
 
