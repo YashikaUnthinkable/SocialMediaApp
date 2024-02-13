@@ -1,28 +1,68 @@
-import React from "react";
+// import React, { useState } from 'react';
+// import axios from 'axios';
 
-export default function Profile() {
-    const [file, setFile] = useState(null)
-    // const handleSubmit= (e)=>{
-    //     e.preventDefault();//to stop by default reloading
-    //     console.log(user);
-    // }
+// const Profile = () => {
+//     const [newUser, setNewUser] = useState(
+//         {
+//             name: '',
+//             birthdate: '',
+//             photo: '',
+//         }
+//     );
 
-    const handleInput = (e)=>{
-        console.log(URL.createObjectURL(e.target.files[0]));
-    }
-  return (
-    <div>
-      <form>
-        <div className="mb-3">
-          <label className="form-label" htmlFor="customFile">
-            Upload your image
-          </label>
-          <input type="file" className="form-control" id="customFile" onChange={handleInput} />
-        </div>
-        <button type="submit" className="btn btn-primary">
-          Submit
-        </button>
-      </form>
-    </div>
-  );
-}
+//     const handleSubmit = (e) => {
+//         e.preventDefault();
+//         const formData = new FormData();
+//         formData.append('photo', newUser.photo);
+//         formData.append('birthdate', newUser.birthdate);
+//         formData.append('name', newUser.name);
+
+//         axios.post('http://localhost:5000/api/posts/imageUpload/', formData)
+//              .then(res => {
+//                 console.log(res);
+//              })
+//              .catch(err => {
+//                 console.log(err);
+//              });
+//     }
+
+//     const handleChange = (e) => {
+//         setNewUser({...newUser, [e.target.name]: e.target.value});
+//     }
+
+//     const handlePhoto = (e) => {
+//         setNewAuthor({...newUser, photo: e.target.files[0]});
+//     }
+
+//     return (
+//         <form onSubmit={handleSubmit} encType='multipart/form-data'>
+//             <input 
+//                 type="file" 
+//                 accept=".png, .jpg, .jpeg"
+//                 name="photo"
+//                 onChange={handlePhoto}
+//             />
+
+//             <input 
+//                 type="text"
+//                 placeholder="name"
+//                 name="name"
+//                 value={newUser.name}
+//                 onChange={handleChange}
+//             />
+
+//             <input 
+//                 type="date"
+//                 name="birthdate"
+//                 value={newUser.date}
+//                 onChange={handleChange}
+//             />
+
+//             <input 
+//                 type="submit"
+//             />
+//         </form>
+//     );
+// }
+
+// export default Profile;

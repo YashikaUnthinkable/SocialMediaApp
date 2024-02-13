@@ -4,7 +4,7 @@ let totalPosts = 14;
 const getAllPosts = async (req,res)=>{
     try {
         const PostsData = await Posts.find({});
-        console.log(req.session);
+        // console.log(req.session);
         return res.status(200).json({Posts: PostsData, totalPosts: totalPosts});
         
     } catch (error) {
@@ -14,12 +14,13 @@ const getAllPosts = async (req,res)=>{
 
 const addtoPost = async (req,res)=>{
     try{
-        const {img, postedBy} = req.body;
-        totalPosts = totalPosts++;
+        // const {img, postedBy} = req.body;
+        // totalPosts = totalPosts++;
+        res.send("Hello from upload...");
 
     } catch(error){
         console.log(error);
     }
 }
 
-module.exports = {getAllPosts};
+module.exports = {getAllPosts, addtoPost};

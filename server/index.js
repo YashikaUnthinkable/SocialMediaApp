@@ -1,39 +1,48 @@
 require("dotenv").config();
 const express = require("express");
-const cors = require("cors");
+// const cors = require("cors");
 const {mongoDbConnection} = require("./db/conn.js");
-const cookieParser = require('cookie-parser'); 
 const authRoute = require("./router/auth.js");
 const contactRount = require("./router/contact.js");
 const PostRouter = require("./router/posts.js");
+
 const session = require('express-session');
  
 
 const app = express();
 
 //handling cors policy
-const corsOption = {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
-    credentials: true
-};
-app.use(cors(corsOption));
+// const corsOption = {
+//     origin: "http://localhost:3000",
+//     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD"],
+//     credentials: true
+// };
+// app.use(cors(corsOption));
 
 //middleware to use json
 app.use(express.json());
 
-app.use(cookieParser());
+
 // Set up session middleware
 app.use(session({
     secret: 'your_secret_here',
     resave: false,
-    saveUninitialized: true,
-    cookie: {
-      secure: false, // Set to true if using HTTPS
-      maxAge: 24 * 60 * 60 * 1000 // Cookie expiration time in milliseconds (1 day)
-    }
+    saveUninitialized: false,
   }));
 
+app.get("/api/userExist",(req,res)=>{
+  if(req.session.user){
+    console.log(req.session.user);
+    res.status(200).json({"msg":"success"});
+  }
+  else{
+    console.log("not there");
+    res.status(400).json("msg","failed");
+  }
+})
+app.get("/api/logout",(req,res)=>{
+  req.session.destroy();
+})
 //using Router
 app.use("/api/auth",authRoute);
 app.use("/api/form",contactRount);
@@ -44,4 +53,7 @@ mongoDbConnection();
 
 app.listen(5000,()=>{
     console.log("Sever is running at port 5000");
+})
+app.get("/full" , (req , res) => {
+  console.log("hello");
 })
