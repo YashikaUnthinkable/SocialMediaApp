@@ -33,15 +33,26 @@ app.use(session({
 app.get("/api/userExist",(req,res)=>{
   if(req.session.user){
     console.log(req.session.user);
-    res.status(200).json({"msg":"success"});
+    res.status(200);
+    return res.json({"msg": "ok"})
+    // return res.status(200).json({"msg":"success"});
   }
   else{
     console.log("not there");
-    res.status(400).json("msg","failed");
+    res.status(400)
+    return res.json({"msg": "not ok"})
+    // return res.status(200).json("msg","failed");
   }
 })
-app.get("/api/logout",(req,res)=>{
-  req.session.destroy();
+app.post("/api/logout",(req,res)=>{
+  try{
+    req.session.destroy(); 
+    res.send("success");
+    res.status(200);
+  }
+  catch(err){
+    console.log(err);
+  }
 })
 //using Router
 app.use("/api/auth",authRoute);

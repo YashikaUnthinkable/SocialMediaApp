@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Login() {
+export default function Login(props) {
     const [user,setUser] = useState({
         email: "",
         password: ""
@@ -35,8 +35,7 @@ export default function Login() {
                     email: "",
                     password: ""
                 });
-                alert(res_data.token)
-                nevigate("/")
+                
             }
             else{
                 alert("Invalid Credentials...")
@@ -46,54 +45,61 @@ export default function Login() {
         }
         
     }
-  return (
-    <div>
-      <div className="container">
-        <div className="row m-5 center p-0 shadow-lg rounded">
-          <img
-            src="/images/login.png"
-            className="h-50 w-50"
-            alt="not available"
-          />
-          <div className="col-sm text-left m-5 ">
-            <h2 className="text-primary">Login Form</h2>
-            <form onSubmit={handleSubmit}>
-              <div className="form-group mt-4">
-                <label htmlFor="email">Email address</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  id="email"
-                  name="email"
-                  aria-describedby="emailHelp"
-                  placeholder="Enter email"
-                  required
-                  autoComplete="off"
-                  value={user.email}
-                  onChange={handleInput}
-                />
+    props.handleUserExist();
+    console.log("log in : ",props.isLoggedIn)
+    if(props.isLoggedIn){
+      nevigate("/")
+    }
+    else{
+      return (
+        <div>
+          <div className="container">
+            <div className="row m-5 center p-0 shadow-lg rounded">
+              <img
+                src="/images/login.png"
+                className="h-50 w-50"
+                alt="not available"
+              />
+              <div className="col-sm text-left m-5 ">
+                <h2 className="text-primary">Login Form</h2>
+                <form onSubmit={handleSubmit}>
+                  <div className="form-group mt-4">
+                    <label htmlFor="email">Email address</label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      id="email"
+                      name="email"
+                      aria-describedby="emailHelp"
+                      placeholder="Enter email"
+                      required
+                      autoComplete="off"
+                      value={user.email}
+                      onChange={handleInput}
+                    />
+                  </div>
+                  <div className="form-group mt-3">
+                    <label htmlFor="password">Password</label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      id="password"
+                      name="password"
+                      placeholder="Password"
+                      required
+                      autoComplete="off"
+                      value={user.password}
+                      onChange={handleInput}
+                    />
+                  </div>
+                  <button type="submit" className="btn btn-primary mt-3">
+                    Login
+                  </button>
+                </form>
               </div>
-              <div className="form-group mt-3">
-                <label htmlFor="password">Password</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  id="password"
-                  name="password"
-                  placeholder="Password"
-                  required
-                  autoComplete="off"
-                  value={user.password}
-                  onChange={handleInput}
-                />
-              </div>
-              <button type="submit" className="btn btn-primary mt-3">
-                Login
-              </button>
-            </form>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  );
-}
+      );    
+    }
+  }

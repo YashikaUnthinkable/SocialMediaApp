@@ -6,6 +6,7 @@ import Register from "./Pages/Register";
 import Login from "./Pages/Login";
 import Profile from "./Pages/Profile";
 import Navbar from "./Components/Navbar";
+import Logout from "./Pages/Logout";
 import { BrowserRouter, Route , Routes} from "react-router-dom";//for routing the different pages on different paths
 
 function App(){
@@ -17,32 +18,41 @@ function App(){
   }
   const [data,setData] = useState([]);
 
-
-  useEffect(()=>{
-    try {
+  const handleUserExist = ()=>{
+    try{
+      let ans;
       fetch("/api/userExist",{
         method: "GET",
         headers: {
           "Content-Type":"application/json"
         }
       }).then(async(response)=>{
-          let res_data = await response.json();
-          console.log(res_data);
+          console.log(response.ok?"ok":"not ok");
+          if(response.ok){
+            setLoggedIn(true);
+          }
+          else{
+            setLoggedIn(false);
+          }
       }).catch((err)=>{
         console.log(err);
       });
+      return ans;
+    }
+    catch(err){
+      console.log(err);
+    }
+  }
+  useEffect(()=>{
+    try {
       
       fetch("/api/posts",{
       method: "GET"
       }).then(async (response)=>{
         const res_data = await response.json();
         console.log(res_data);
-        if(response.ok){
-          setLoggedIn(true);
-          setTotalPosts(res_data.totalPosts)
-          console.log("ok");
-          setData(res_data.Posts);
-        }
+        setData(res_data.Posts);
+        HandletotalPosts(res_data.totalPosts);
       }
         ).catch((err)=>{console.log(err)});
 
@@ -56,12 +66,25 @@ function App(){
       <BrowserRouter>
         <Navbar isLoggedIn={isLoggedIn}/>
         <Routes>
-          <Route path="/" element={<Home setLoggedIn={setLoggedIn} isLoggedIn={isLoggedIn} setTotalPosts={HandletotalPosts} totalPosts={totalPosts} data={data}/>}/>
+          <Route path="/" element={<Home
+          isLoggedIn={isLoggedIn} 
+          setTotalPosts={HandletotalPosts} 
+          totalPosts={totalPosts} 
+          data={data}
+          handleUserExist={handleUserExist}/>}/>
           <Route path="/about" element={<About/>}/>
           <Route path="/contact" element={<Contact/>}/>
-          <Route path="/register" element={<Register/>}/>
-          <Route path="/login" element={<Login/>}/>
+          <Route path="/register" element={<Register 
+          handleUserExist={handleUserExist}
+          isLoggedIn={isLoggedIn} />}/>
+          <Route path="/login" element={<Login 
+          setLoggedIn={setLoggedIn}
+          isLoggedIn={isLoggedIn}
+           handleUserExist={handleUserExist}/>}/>
           <Route path="/profile" element={<Profile totalPosts={totalPosts} setTotalPosts={HandletotalPosts}/>}/>
+          <Route path="/logout" element={<Logout 
+          isLoggedIn={isLoggedIn}
+          handleUserExist={handleUserExist}/>}/>
         </Routes>
       </BrowserRouter>
     </div>

@@ -5,7 +5,8 @@ import { NavLink } from "react-router-dom";
 
 
 export default function Navbar(props) {
-  console.log(props.isLoggedIn);
+  console.log("navbar:",props.isLoggedIn);
+
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -33,12 +34,12 @@ export default function Navbar(props) {
               </li>
               
               <li className="nav-item ">
-                <NavLink className="nav-link " to={props.isLoggedIn? "/api/logout" : "/register"} aria-expanded="false">
+                <NavLink className="nav-link " to={(props.isLoggedIn) ? "/logout" : "/register"} aria-expanded="false">
                   {props.isLoggedIn? "Logout" : "SignUp"}
                 </NavLink>
               </li>
               <li className="nav-item ">
-                <NavLink className="nav-link " to={props.isLoggedIn? "/profile" : "/login"} aria-expanded="false">
+                <NavLink className="nav-link " to={(props.isLoggedIn)? "/profile" : "/login"} aria-expanded="false">
                 {props.isLoggedIn? "Profile" : "Signin"}
                 </NavLink>
               </li>
