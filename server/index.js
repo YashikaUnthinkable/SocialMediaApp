@@ -5,8 +5,10 @@ const {mongoDbConnection} = require("./db/conn.js");
 const authRoute = require("./router/auth.js");
 const contactRount = require("./router/contact.js");
 const PostRouter = require("./router/posts.js");
-
 const session = require('express-session');
+const multer = require('multer');
+const mongoose = require('mongoose');
+const path = require('path');
  
 
 const app = express();
@@ -53,7 +55,58 @@ app.post("/api/logout",(req,res)=>{
   catch(err){
     console.log(err);
   }
-})
+});
+const imageSchema = new mongoose.Schema({
+  imageUrl: String,
+});
+
+// Create a model based on the schema
+const Image = mongoose.model('Image', imageSchema);
+
+// Set up multer to handle file uploads
+const storage = multer.diskStorage({
+  destination: './images/',
+  filename: function(req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ 
+  storage: storage,
+  limits: { fileSize: 1000000 } // 1 MB limit
+}).single('image');
+
+// Route to handle image upload
+app.post('/api/upload', (req, res) => {
+  console.log(req.body);
+  upload(req, res, async (err) => {
+    if (err) {
+      return res.status(400).json({ error: err.message });
+    }
+
+    try {
+      const newImage = new Image({
+        imageUrl: req.file.path
+      });
+      await newImage.save();
+      res.json({ imageUrl: req.file.path });
+    } catch (error) {
+      console.error('Error saving image to database:', error);
+      res.status(500).json({ error: 'Failed to save image to database' });
+    }
+  });
+});
+
+// Route to get all images
+app.get('/api/images', async (req, res) => {
+  try {
+    const images = await Image.find();
+    res.json(images);
+  } catch (error) {
+    console.error('Error fetching images:', error);
+    res.status(500).json({ error: 'Failed to fetch images' });
+  }
+});
 //using Router
 app.use("/api/auth",authRoute);
 app.use("/api/form",contactRount);
