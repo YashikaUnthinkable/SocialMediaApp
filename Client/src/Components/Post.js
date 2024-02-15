@@ -8,8 +8,14 @@ export default function Post(props) {
   const setLike = () => {
     if (liked) {
       setLiked(false);
+      let newData = [...props.data];
+      newData[props.index].noOfLikes--;
+      props.setData(newData);
     } else {
       setLiked(true);
+      let newData = [...props.data];
+      newData[props.index].noOfLikes++;
+      props.setData(newData);
     }
   };
 

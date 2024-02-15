@@ -71,6 +71,7 @@ function App(){
           setTotalPosts={HandletotalPosts} 
           totalPosts={totalPosts} 
           data={data}
+          setData={setData}
           handleUserExist={handleUserExist}/>}/>
           <Route path="/about" element={<About/>}/>
           <Route path="/contact" element={<Contact/>}/>

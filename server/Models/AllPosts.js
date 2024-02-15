@@ -7,7 +7,6 @@ const AllPostsSchema = new mongoose.Schema({
     },
     img:{
         type: String,
-        required: true
     },
     noOfLikes: {
         type: Number,

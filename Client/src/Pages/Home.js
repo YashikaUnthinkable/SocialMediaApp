@@ -14,7 +14,7 @@ export default function Home(props) {
       <div>
         <div className="d-flex flex-column align-items-center justify-content-center">
           <div><h1>total no of posts are: {props.totalPosts}</h1></div>
-          <PostList data={props.data}/>
+          <PostList data={props.data} setData = {props.setData}/>
         </div>
       </div>
     );
