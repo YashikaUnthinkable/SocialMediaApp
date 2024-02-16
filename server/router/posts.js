@@ -1,5 +1,5 @@
 const express = require("express");
-const { getAllPosts, addtoPost ,handletotalPosts} = require("../Controller/posts");
+const { getAllPosts, addtoPost ,handletotalPosts,UpdatePosts} = require("../Controller/posts");
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -7,10 +7,10 @@ const fs = require('fs');
 // Set storage engine
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
-    cb(null,path.join(__dirname+"/.."+"/.."+"/Client"+"/public"+'/images/')); // Specify the destination folder
+    cb(null,path.join(__dirname +'/..'+'/images/')); // Specify the destination folder
   },
   filename: function(req, file, cb) {
-    cb(null, "I0"+ handletotalPosts() + ".jpg"); // Generate unique filename
+    cb(null, "I0"+ Number(handletotalPosts()+1) + ".jpg"); // Generate unique filename
   }
 });
 
@@ -22,7 +22,9 @@ const upload = multer({
 
 const PostRouter = express.Router();
 
-PostRouter.get("/", getAllPosts);
+PostRouter.get("/", (req,res)=>{
+  getAllPosts(req,res,req.session._id);
+});
 
 PostRouter.post('/upload', async (req, res) => {
   
@@ -32,10 +34,16 @@ PostRouter.post('/upload', async (req, res) => {
       console.error(err);
       res.status(400).json({ error: 'Failed to upload file' });
     } else {
-      addtoPost(req,res);
+      addtoPost(req,res,req.session.user,req.session._id);
       res.status(200).json({ filename: req.file.filename }); // Return the filename of the uploaded file
     }
   });
 });
+
+PostRouter.patch("/uploadNoOfLikes",(req,res)=>{
+  console.log(req.session);
+  console.log(req.body);
+  UpdatePosts(req,res,req.session._id);
+})
 
 module.exports = PostRouter;

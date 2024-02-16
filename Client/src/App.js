@@ -12,12 +12,12 @@ import { BrowserRouter, Route , Routes} from "react-router-dom";//for routing th
 function App(){
   const [isLoggedIn,setLoggedIn] = useState(false);
   const [totalPosts,setTotalPosts] = useState(0);
-
+  const [userId, setUserId] = useState("");
   const HandletotalPosts = (input)=>{
     setTotalPosts(input);
   }
   const [data,setData] = useState([]);
-
+  const [comments, setComments] = useState([]);
   const handleUserExist = ()=>{
     try{
       let ans;
@@ -43,24 +43,7 @@ function App(){
       console.log(err);
     }
   }
-  useEffect(()=>{
-    try {
-      
-      fetch("/api/posts",{
-      method: "GET"
-      }).then(async (response)=>{
-        const res_data = await response.json();
-        console.log(res_data);
-        setData(res_data.Posts);
-        HandletotalPosts(res_data.totalPosts);
-      }
-        ).catch((err)=>{console.log(err)});
-
-      
-    } catch (error) {
-      console.log(error);
-    }
-  },[])
+  
   return (
     <div>
       <BrowserRouter>
@@ -72,17 +55,30 @@ function App(){
           totalPosts={totalPosts} 
           data={data}
           setData={setData}
-          handleUserExist={handleUserExist}/>}/>
+          comments = {comments}
+          setComments = {setComments}
+          handleUserExist={handleUserExist}
+          userId={userId}
+          setUserId={setUserId}/>}/>
+
           <Route path="/about" element={<About/>}/>
+
           <Route path="/contact" element={<Contact/>}/>
+
           <Route path="/register" element={<Register 
           handleUserExist={handleUserExist}
           isLoggedIn={isLoggedIn} />}/>
+
           <Route path="/login" element={<Login 
           setLoggedIn={setLoggedIn}
           isLoggedIn={isLoggedIn}
            handleUserExist={handleUserExist}/>}/>
-          <Route path="/profile" element={<Profile totalPosts={totalPosts} setTotalPosts={HandletotalPosts}/>}/>
+
+          <Route path="/profile" element={<Profile 
+          // totalPosts={totalPosts} 
+          // setTotalPosts={HandletotalPosts}
+          isLoggedIn={isLoggedIn}/>}/>
+
           <Route path="/logout" element={<Logout 
           isLoggedIn={isLoggedIn}
           handleUserExist={handleUserExist}/>}/>

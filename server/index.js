@@ -9,7 +9,9 @@ const session = require('express-session');
 const multer = require('multer');
 const mongoose = require('mongoose');
 const path = require('path');
- 
+const fs = require('fs');
+const Comments = require("./Models/comments.js");
+const Posts = require("./Models/AllPosts");
 
 const app = express();
 
@@ -111,6 +113,7 @@ app.get('/api/images', async (req, res) => {
 app.use("/api/auth",authRoute);
 app.use("/api/form",contactRount);
 app.use("/api/posts",PostRouter);
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 //for mongoDB Connection
 mongoDbConnection();
@@ -121,3 +124,32 @@ app.listen(5000,()=>{
 app.get("/full" , (req , res) => {
   console.log("hello");
 })
+
+app.get('/api/comments/:pid',async (req,res)=>{
+  const {pid} =  req.params;
+  const post = await Posts.find({id: pid})
+  const data = post[0].CommentedBy;
+  console.log(data);
+  const comments = await Comments.find({_id: data});
+  console.log(comments);
+  return res.status(200).json({Comments: comments});
+});
+app.post('/api/comments',async (req,res)=>{
+  const comment = await Comments.create({commentedBy: req.session.user, message: req.body.message});
+  console.log(comment._id.toString());
+  
+  const post = await Posts.findOneAndUpdate({id: req.body.pid},{$push: { CommentedBy: comment._id.toString()}});
+  res.status(200).json({"commentId":comment._id.toString()}); 
+})
+app.get('/api/image/:imageName', (req, res) => {
+  const { imageName } = req.params;
+  const imagePath = path.join(__dirname, 'images', imageName+'.jpg');
+  
+  // Check if the file exist
+  if (fs.existsSync(imagePath)) {
+      res.sendFile(imagePath);
+  } else {
+    console.log("Image not found");
+      res.status(404).send('Image not found');
+  }
+});

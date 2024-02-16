@@ -1,5 +1,6 @@
 const User = require("../Models/user-model");
 const bcrypt = require("bcrypt");
+const mongoose = require("mongoose");
 
 
 
@@ -18,7 +19,6 @@ const register = async (req, res) => {
     const { username, email, password } = req.body;
     const userExist = await User.findOne({ email: email });
     if (userExist) {
-      console.log(userExist);
       return res.status(400).json({ msg: "email already exist..." });
     }
     // hashing the password
@@ -29,14 +29,9 @@ const register = async (req, res) => {
       username,
       email,
       password: hash_password,
-      Posts: [],
+      Posts: []
     });
-
-
-////
-
-
-
+    console.log(UserCreated);
 
     res.status(200).send({
       msg: "registered Successfull",
@@ -50,4 +45,13 @@ const login = async (req, res) => {
   
 };
 
-module.exports = { home, register, login };
+const addPostInUser = async (pid,id)=>{
+  console.log(pid);
+  console.log(id);
+  const userExist = await User.findOneAndUpdate({_id: id},{$push: {Posts :pid}});
+  console.log(userExist);
+}
+
+
+
+module.exports = { home, register, login ,addPostInUser};

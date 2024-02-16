@@ -25,20 +25,29 @@ router.post("/login" , async(req , res) => {
     
         // Generate token and set it in session
         // const token = await userExist.generateToken();
-        console.log(userExist.email);
-          req.session.user = userExist.email;
-
+        const userExist2 = await User.findOne({email});
+        id = userExist2._id.toString();
+        console.log(id);
+        req.session.user = userExist2.email;
+        req.session._id = id;
+        console.log(id);
+        console.log(req.session._id);
         // req.session.user = "yashika";
         
     
         res.status(200).json({
           msg: "Login Successful",
-          userId: userExist._id.toString()
+          userId: id
         });
       } catch (error) {
         console.error(error);
         res.status(500).json({ msg: "Internal server error" });
       }
-}) 
+});
+// router.get("/postsLiked",(req,res)=>{
+//   console.log(req.session);
+//   PostsLiked(req,res,req.session._id);
+//   res.send({"msg": "success"})
+// }) 
 
 module.exports = router;

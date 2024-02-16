@@ -8,12 +8,16 @@ const AllPostsSchema = new mongoose.Schema({
     img:{
         type: String,
     },
-    noOfLikes: {
-        type: Number,
+    LikedBy: {
+        type: Object,
         required: true
     },
     postedBy: {
         type: String
+    },
+    CommentedBy: {
+        type: Object,
+        required: true
     }
 })
 
