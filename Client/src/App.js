@@ -77,7 +77,10 @@ function App(){
           <Route path="/profile" element={<Profile 
           // totalPosts={totalPosts} 
           // setTotalPosts={HandletotalPosts}
-          isLoggedIn={isLoggedIn}/>}/>
+          isLoggedIn={isLoggedIn}
+          comments = {comments}
+          setComments = {setComments}
+/>}/>
 
           <Route path="/logout" element={<Logout 
           isLoggedIn={isLoggedIn}

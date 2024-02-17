@@ -33,7 +33,6 @@ export default function Register(props) {
                     email: "",
                     password: ""
                 })
-                alert(res_data.token);
                 nevigate("/login")
             }
             else{

@@ -5,13 +5,15 @@ const {mongoDbConnection} = require("./db/conn.js");
 const authRoute = require("./router/auth.js");
 const contactRount = require("./router/contact.js");
 const PostRouter = require("./router/posts.js");
+const Commentrouter = require("./router/comment.js");
 const session = require('express-session');
 const multer = require('multer');
 const mongoose = require('mongoose');
 const path = require('path');
 const fs = require('fs');
-const Comments = require("./Models/comments.js");
+const User = require("./Models/user-model");
 const Posts = require("./Models/AllPosts");
+
 
 const app = express();
 
@@ -25,7 +27,6 @@ const app = express();
 
 //middleware to use json
 app.use(express.json());
-
 
 // Set up session middleware
 app.use(session({
@@ -47,7 +48,27 @@ app.get("/api/userExist",(req,res)=>{
     return res.json({"msg": "not ok"})
     // return res.status(200).json("msg","failed");
   }
-})
+});
+app.get("/api/userData", async (req, res) => {
+  try {
+    console.log(req.session._id);
+    const user = await User.findById(req.session._id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const posts = await user.Posts; // Assuming Posts is an array field in the user document
+    console.log("User posts:", posts);
+
+    const postsData = await Posts.find({ id: { $in: posts } });
+    console.log("Posts data:", postsData);
+
+    res.status(200).json({ user: user, data: postsData });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 app.post("/api/logout",(req,res)=>{
   try{
     req.session.destroy(); 
@@ -113,6 +134,7 @@ app.get('/api/images', async (req, res) => {
 app.use("/api/auth",authRoute);
 app.use("/api/form",contactRount);
 app.use("/api/posts",PostRouter);
+app.use("/api/comments",Commentrouter);
 app.use('/images', express.static(path.join(__dirname, 'images')));
 
 //for mongoDB Connection
@@ -121,26 +143,7 @@ mongoDbConnection();
 app.listen(5000,()=>{
     console.log("Sever is running at port 5000");
 })
-app.get("/full" , (req , res) => {
-  console.log("hello");
-})
 
-app.get('/api/comments/:pid',async (req,res)=>{
-  const {pid} =  req.params;
-  const post = await Posts.find({id: pid})
-  const data = post[0].CommentedBy;
-  console.log(data);
-  const comments = await Comments.find({_id: data});
-  console.log(comments);
-  return res.status(200).json({Comments: comments});
-});
-app.post('/api/comments',async (req,res)=>{
-  const comment = await Comments.create({commentedBy: req.session.user, message: req.body.message});
-  console.log(comment._id.toString());
-  
-  const post = await Posts.findOneAndUpdate({id: req.body.pid},{$push: { CommentedBy: comment._id.toString()}});
-  res.status(200).json({"commentId":comment._id.toString()}); 
-})
 app.get('/api/image/:imageName', (req, res) => {
   const { imageName } = req.params;
   const imagePath = path.join(__dirname, 'images', imageName+'.jpg');

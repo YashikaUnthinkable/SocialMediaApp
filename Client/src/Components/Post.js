@@ -6,8 +6,9 @@ export default function Post(props) {
   let [liked, setLiked] = useState(false);
   const [imageSrc, setImageSrc] = useState("");
   const [isComment, setIsComment] = useState(false);
+
   useEffect(() => {
-    // Fetch image from the server
+    // Fetch image from the server by image id
     fetch(`/api/image/${props.post.img}`)
       .then((response) => {
         if (!response.ok) {
@@ -16,21 +17,20 @@ export default function Post(props) {
         return response.blob();
       })
       .then((imageBlob) => {
-        const imageUrl = URL.createObjectURL(imageBlob);
+        const imageUrl = URL.createObjectURL(imageBlob); // it is user to convert the image to the url
         setImageSrc(imageUrl);
       })
       .catch((error) => {
         console.error("Error fetching image:", error);
       });
-    console.log(props.post.LikedBy);
-    console.log(props.userId);
     if (props.post.LikedBy.indexOf(props.userId) !== -1) {
       setLiked(true);
     } else {
       setLiked(false);
-    } // true
+    }
   }, []);
 
+  // a function to manage the likes and dislike on clicking on button
   const setLike = async () => {
     if (liked) {
       setLiked(false);
@@ -44,6 +44,7 @@ export default function Post(props) {
         pid: props.post.id,
         liked: false,
       };
+      //for removing the post likes
       const response = await fetch("/api/posts/uploadNoOfLikes", {
         method: "PATCH",
         headers: {
@@ -64,6 +65,7 @@ export default function Post(props) {
         pid: props.post.id,
         liked: true,
       };
+      //for updating the post with who like the post
       const response = await fetch("/api/posts/uploadNoOfLikes", {
         method: "PATCH",
         headers: {
@@ -78,7 +80,8 @@ export default function Post(props) {
     }
   };
 
-  const setComment =() => {
+  // a funciton to see the comments on the posts on clicking it
+  const setComment = () => {
     if (isComment) {
       setIsComment(false);
       props.setComments([]);
@@ -102,8 +105,9 @@ export default function Post(props) {
     }
   };
 
+  //a function to add comments on the posts on clicking on addcomment button
   const addComments = () => {
-    let msg = document.getElementById("comment" + props.index).value;
+    let msg = document.getElementById("comment" + props.index).value; //used to get the message of that user want to add
     fetch("/api/comments", {
       method: "POST",
       headers: {
@@ -121,10 +125,26 @@ export default function Post(props) {
         console.log(res_data);
       })
       .catch((err) => console.log(err));
-      props.setComments([]);
-    setComment(false);
+    props.setComments([]);
+    // setComment(false);
+    fetch(`/api/comments/${props.post.id}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch comments");
+        }
+        return response;
+      })
+      .then(async (response) => {
+        const res_data = await response.json();
+        console.log(res_data.Comments);
+        props.setComments(res_data.Comments);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
+  // a template of comment Box on clicking on comment button
   let commentBox = (
     <div className="p-3 row">
       <div className="col-8">
@@ -140,30 +160,36 @@ export default function Post(props) {
     </div>
   );
   return (
-    <div className="shadow-lg col h-50 w-100 bg-white m-2 rounded">
-      <div className="row-2">
-        <div className="p-3">Posted By- {props.post.postedBy}</div>
-      </div>
-      <img
-        src={imageSrc}
-        className="row-6 img-fluid p-1 rounded"
-        alt="not available"
-        id={props.post.img}
-      />
-      <div className="row-2 ">
-        <div className="row">
-          <div className="p-3 col-5">
-            <div className="text-danger fs-4" onClick={setLike}>
-              {liked ? <FaHeart /> : <FaRegHeart />}
+    <div>
+      <div className="shadow-lg col h-50 w-100 bg-white m-2 rounded">
+        <div className="row-2">
+          <div className="p-3">Posted By- {props.post.postedBy}</div>
+        </div>
+        <img
+          src={imageSrc}
+          className="row-6 img-fluid p-1 rounded"
+          alt="not available"
+          id={props.post.img}
+        />
+        <div className="row-2 ">
+          <div className="row">
+            <div className="p-3 col-5">
+              <div className="text-danger fs-4" onClick={setLike}>
+                {liked ? <FaHeart /> : <FaRegHeart />}
+              </div>
+              {props.post.LikedBy.length} Likes
             </div>
-            {props.post.LikedBy.length} Likes
-          </div>
-          <div className="p-3 col-5 fs-5" onClick={setComment}>
-            <FaRegCommentDots />
+            <div className="p-3 col-5 fs-5" onClick={setComment}>
+              <FaRegCommentDots />
+            </div>
           </div>
         </div>
+        <div className="row-2">{isComment ? commentBox : ""}</div>
       </div>
-      <div className="row-2">{isComment ? commentBox : ""}</div>
+      <hr />
+      <div >
+          Comments
+      </div>
     </div>
   );
 }

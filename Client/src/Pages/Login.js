@@ -17,10 +17,12 @@ export default function Login(props) {
         setUser(newUser);
     }
 
+    //handle the submit 
     const handleSubmit = async (e)=>{
         e.preventDefault();//to stop by default reloading
         console.log(user);
         try {
+          // for sending the login request
             const response = await fetch("/api/auth/login",{
                 method:"POST",
                 headers:{
