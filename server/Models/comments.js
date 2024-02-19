@@ -8,8 +8,14 @@ const commentSchema = new mongoose.Schema({
     message:{
         type: String,
         required: true
-    }
-})
+    },
+    onPost: {
+        type: String,
+        required: true
+    },
+    
+},
+{timestamps: true})
 
 const Comments = mongoose.model("Comment",commentSchema);
 

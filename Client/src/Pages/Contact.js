@@ -38,7 +38,7 @@ export default function Contact() {
     }
   };
   return (
-    <div className="container ">
+    <div className="container" style={{marginTop: "70px"}}>
       <div className="row m-5 center rounded shadow-lg">
         <img
           src="/images/contact.png"

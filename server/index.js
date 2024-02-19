@@ -40,13 +40,11 @@ app.get("/api/userExist",(req,res)=>{
     console.log(req.session.user);
     res.status(200);
     return res.json({"msg": "ok"})
-    // return res.status(200).json({"msg":"success"});
   }
   else{
     console.log("not there");
     res.status(400)
     return res.json({"msg": "not ok"})
-    // return res.status(200).json("msg","failed");
   }
 });
 app.get("/api/userData", async (req, res) => {
@@ -84,7 +82,7 @@ const imageSchema = new mongoose.Schema({
 });
 
 // Create a model based on the schema
-const Image = mongoose.model('Image', imageSchema);
+// const Image = mongoose.model('Image', imageSchema);
 
 // Set up multer to handle file uploads
 const storage = multer.diskStorage({

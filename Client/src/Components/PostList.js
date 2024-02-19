@@ -13,8 +13,6 @@ export default function PostList(props) {
           data={props.data}
           setData={props.setData}
           userId= {props.userId}
-          setComments= {props.setComments}
-          comments = {props.comments}
         />
       );
     })

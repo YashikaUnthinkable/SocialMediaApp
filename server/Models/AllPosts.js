@@ -14,10 +14,6 @@ const AllPostsSchema = new mongoose.Schema({
     },
     postedBy: {
         type: String
-    },
-    CommentedBy: {
-        type: Object,
-        required: true
     }
 })
 

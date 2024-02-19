@@ -11,13 +11,8 @@ import { BrowserRouter, Route , Routes} from "react-router-dom";//for routing th
 
 function App(){
   const [isLoggedIn,setLoggedIn] = useState(false);
-  const [totalPosts,setTotalPosts] = useState(0);
   const [userId, setUserId] = useState("");
-  const HandletotalPosts = (input)=>{
-    setTotalPosts(input);
-  }
-  const [data,setData] = useState([]);
-  const [comments, setComments] = useState([]);
+ 
   const handleUserExist = ()=>{
     try{
       let ans;
@@ -43,7 +38,7 @@ function App(){
       console.log(err);
     }
   }
-  
+  handleUserExist();
   return (
     <div>
       <BrowserRouter>
@@ -51,13 +46,6 @@ function App(){
         <Routes>
           <Route path="/" element={<Home
           isLoggedIn={isLoggedIn} 
-          setTotalPosts={HandletotalPosts} 
-          totalPosts={totalPosts} 
-          data={data}
-          setData={setData}
-          comments = {comments}
-          setComments = {setComments}
-          handleUserExist={handleUserExist}
           userId={userId}
           setUserId={setUserId}/>}/>
 
@@ -74,12 +62,8 @@ function App(){
           isLoggedIn={isLoggedIn}
            handleUserExist={handleUserExist}/>}/>
 
-          <Route path="/profile" element={<Profile 
-          // totalPosts={totalPosts} 
-          // setTotalPosts={HandletotalPosts}
+          <Route path="/profile" element={<Profile
           isLoggedIn={isLoggedIn}
-          comments = {comments}
-          setComments = {setComments}
 />}/>
 
           <Route path="/logout" element={<Logout 

@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { FaHeart } from "react-icons/fa";
 import { FaRegHeart, FaRegCommentDots } from "react-icons/fa";
+import CommentList from "./CommentList";
 
 export default function Post(props) {
   let [liked, setLiked] = useState(false);
   const [imageSrc, setImageSrc] = useState("");
   const [isComment, setIsComment] = useState(false);
+  const [comments, setComments] = useState([]);
+  const [totalLikes, settotalLikes] = useState(0);
 
   useEffect(() => {
     // Fetch image from the server by image id
@@ -28,24 +31,20 @@ export default function Post(props) {
     } else {
       setLiked(false);
     }
+    settotalLikes(props.post.LikedBy.length);
   }, []);
 
   // a function to manage the likes and dislike on clicking on button
   const setLike = async () => {
     if (liked) {
       setLiked(false);
-      let newData = [...props.data];
-      var i = newData[props.index].LikedBy.indexOf(1);
-      if (i !== -1) {
-        newData[props.index].LikedBy.splice(i, 1);
-      }
-      props.setData(newData);
+      settotalLikes(totalLikes - 1);
       let ldata = await {
         pid: props.post.id,
         liked: false,
       };
       //for removing the post likes
-      const response = await fetch("/api/posts/uploadNoOfLikes", {
+      const response = await fetch("/api/posts/LikesDisLikes", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -58,15 +57,13 @@ export default function Post(props) {
       }
     } else {
       setLiked(true);
-      let newData = [...props.data];
-      newData[props.index].LikedBy.push(1);
-      props.setData(newData);
+      settotalLikes(totalLikes + 1);
       let ldata = await {
         pid: props.post.id,
         liked: true,
       };
       //for updating the post with who like the post
-      const response = await fetch("/api/posts/uploadNoOfLikes", {
+      const response = await fetch("/api/posts/LikesDisLikes", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -80,28 +77,30 @@ export default function Post(props) {
     }
   };
 
+  const getComment = () => {
+    fetch(`/api/comments/${props.post.id}`)
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to fetch comments");
+        }
+        return response;
+      })
+      .then(async (response) => {
+        const res_data = await response.json();
+        console.log(res_data.Comments);
+        setComments(res_data.Comments);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   // a funciton to see the comments on the posts on clicking it
-  const setComment = () => {
+  const setCommentBox = () => {
     if (isComment) {
       setIsComment(false);
-      props.setComments([]);
     } else {
       setIsComment(true);
-      fetch(`/api/comments/${props.post.id}`)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Failed to fetch comments");
-          }
-          return response;
-        })
-        .then(async (response) => {
-          const res_data = await response.json();
-          console.log(res_data.Comments);
-          props.setComments(res_data.Comments);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+      getComment();
     }
   };
 
@@ -123,46 +122,41 @@ export default function Post(props) {
       })
       .then((res_data) => {
         console.log(res_data);
+        getComment();
+        document.getElementById("comment" + props.index).value = "";
       })
       .catch((err) => console.log(err));
-    props.setComments([]);
-    // setComment(false);
-    fetch(`/api/comments/${props.post.id}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch comments");
-        }
-        return response;
-      })
-      .then(async (response) => {
-        const res_data = await response.json();
-        console.log(res_data.Comments);
-        props.setComments(res_data.Comments);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   };
 
   // a template of comment Box on clicking on comment button
   let commentBox = (
-    <div className="p-3 row">
-      <div className="col-8">
-        <input
-          type="text"
-          className=" col-6 form-control"
-          id={"comment" + props.index}
-        />
+    <div className="p-2 m-2 col bg-white">
+      <div className="p-2 row-2 h-25 row border rounded">
+        <div className="col-8">
+          <input
+            type="text"
+            className="form-control"
+            id={"comment" + props.index}
+          />
+        </div>
+        <button className="col-4 btn btn-primary" onClick={addComments}>
+          Add Comment
+        </button>
       </div>
-      <button className=" col-4 btn btn-primary" onClick={addComments}>
-        Add Comment
-      </button>
+      <div className="row-10" style={{ maxHeight: "300px", overflowY: "auto" }}>
+        <div className="d-flex flex-column-reverse">
+          <CommentList comments={comments} setComments={setComments} />
+        </div>
+      </div>
     </div>
   );
   return (
-    <div>
-      <div className="shadow-lg col h-50 w-100 bg-white m-2 rounded">
-        <div className="row-2">
+    <div className="align-items-center justify-content-center w-50">
+      <div
+        className="shadow-lg col m-4  bg-white rounded"
+        style={{ height: "580px" }}
+      >
+        <div className="row-3">
           <div className="p-3">Posted By- {props.post.postedBy}</div>
         </div>
         <img
@@ -177,18 +171,17 @@ export default function Post(props) {
               <div className="text-danger fs-4" onClick={setLike}>
                 {liked ? <FaHeart /> : <FaRegHeart />}
               </div>
-              {props.post.LikedBy.length} Likes
+              {totalLikes} Likes
             </div>
-            <div className="p-3 col-5 fs-5" onClick={setComment}>
+            <div className="p-3 col-5 fs-5" onClick={setCommentBox}>
               <FaRegCommentDots />
             </div>
           </div>
         </div>
-        <div className="row-2">{isComment ? commentBox : ""}</div>
       </div>
-      <hr />
-      <div >
-          Comments
+
+      <div className="m-4 bg-white rounded shadow-lg">
+        {isComment ? commentBox : ""}
       </div>
     </div>
   );

@@ -58,7 +58,7 @@ function Profile(props) {
   };
   if (props.isLoggedIn) {
     return (
-      <div>
+      <div  style={{marginTop: "70px"}}>
         <div className="row">
           <h2 className="col-6">{userData.username}</h2>
           <div className="col-6 align-right">
@@ -82,9 +82,8 @@ function Profile(props) {
         </form>
         <hr />
         <h4>Your Posts</h4>
-        <div className="row">
-          <div className="col-3"></div>
-          <div className="col-6 d-flex flex-column-reverse align-items-center justify-content-center">
+          <div className="d-flex flex-column-reverse align-items-center justify-content-center"
+            style={{ overflowY: "auto" }}>
             <PostList
               data={data}
               setData={setData}
@@ -93,16 +92,6 @@ function Profile(props) {
               setComments={props.setComments}
             />
           </div>
-          <div className="col-3 border" style={{ overflowY: "auto" }}>
-            <div className="d-flex flex-column-reverse">
-              <CommentList
-                comments={props.comments}
-                setComments={props.setComments}
-              />
-              <h3>Comments</h3>
-            </div>
-          </div>
-        </div>
       </div>
     );
   } else {

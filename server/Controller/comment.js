@@ -1,30 +1,38 @@
 const Comments = require("../Models/comments.js");
-const Posts = require("../Models/AllPosts");
+
 
 const getComments = async (req, res) => {
-    const { pid } = req.params;
-    const post = await Posts.find({ id: pid });
-    const data = post[0].CommentedBy;
-    console.log(data);
-    const comments = await Comments.find({ _id: data });
-    console.log(comments);
-    return res.status(200).json({ Comments: comments });
+  try {
+      const { pid } = req.params;
+      
+      const comments = await Comments.find({onPost: pid});
+      return res.status(200).json({ Comments: comments });
+  } catch (error) {
+      console.error('Error fetching comments:', error);
+      return res.status(500).json({ error: 'Internal server error' });
   }
+}
 
- const addToComments =  async (req, res, user) => {
-    console.log(req.body);
-    const comment = await Comments.create({
-      commentedBy: user,
-      message: req.body.message,
-    });
-    console.log(comment);
-    console.log(comment._id.toString());
-  
-    const post = await Posts.findOneAndUpdate(
-      { id: req.body.pid },
-      { $push: { CommentedBy: comment._id.toString() } }
-    );
-    res.status(200).json({ commentId: comment._id.toString() });
+const addToComments = async (req, res, user) => {
+  try {
+      const { pid, message } = req.body;
+
+      if (!pid || !message) {
+          return res.status(400).json({ error: 'Missing required parameters' });
+      }
+
+      const comment = await Comments.create({
+          commentedBy: user,
+          message: message,
+          onPost: pid
+      });
+      console.log(comment);
+
+      return res.status(200).json({"msg": "success"});
+  } catch (error) {
+      console.error('Error adding comment:', error);
+      return res.status(500).json({ error: 'Internal server error' });
   }
+}
 
 module.exports = {getComments, addToComments};

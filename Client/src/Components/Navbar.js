@@ -9,7 +9,7 @@ export default function Navbar(props) {
 
   return (
     <div>
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+      <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
         <div className="container">
           <NavLink className="navbar-brand d-flex flex-row" to="#">
             Social Medial App

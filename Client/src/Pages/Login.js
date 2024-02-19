@@ -54,7 +54,7 @@ export default function Login(props) {
     }
     else{
       return (
-        <div>
+        <div style={{marginTop: "70px"}}>
           <div className="container">
             <div className="row m-5 center p-0 shadow-lg rounded">
               <img

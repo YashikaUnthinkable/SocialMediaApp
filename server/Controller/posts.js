@@ -23,8 +23,7 @@ const addtoPost = async (req,res,user,id)=>{
             id: pid,
             img: req.file.filename.replace(".jpg",""),
             LikedBy: [],
-            postedBy: user,
-            CommentedBy: []
+            postedBy: user
         });
         console.log(postCreated);
         addPostInUser(pid,id);

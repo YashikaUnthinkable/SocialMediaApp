@@ -40,7 +40,7 @@ PostRouter.post('/upload', async (req, res) => {
   });
 });
 
-PostRouter.patch("/uploadNoOfLikes",(req,res)=>{
+PostRouter.patch("/LikesDisLikes",(req,res)=>{
   console.log(req.session);
   console.log(req.body);
   UpdatePosts(req,res,req.session._id);
