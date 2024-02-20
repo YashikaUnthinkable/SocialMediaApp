@@ -45,6 +45,7 @@ export default function Home(props) {
   }, [, count]);
 
   const setPaging = (e) => {
+    console.log("Data: ",data);
     const n = e.target.name;
     if (n === "privious") {
       let newCount = count - 10;
@@ -54,6 +55,9 @@ export default function Home(props) {
     } else {
       let newCount = count + 10;
       setCount(newCount);
+      if(count>postsCount){
+        setNext(false);
+      }
       setPrivious(true);
 
       setData([]);
@@ -66,7 +70,7 @@ export default function Home(props) {
   );
   const nextButton = (
     <button className="btn btn-primary m-2" name="next" onClick={setPaging}>
-      Next >{" "}
+      Next 
     </button>
   );
 
@@ -82,7 +86,7 @@ export default function Home(props) {
           <h1>total no of posts are: {totalPosts}</h1>
         </div>
         <div
-          className=" d-flex flex-row position-fixed fixed-bottom bg-dark "
+          className=" d-flex flex-row position-fixed fixed-bottom bg-white "
           style={{ justifyContent: "flex-end" }}
         >
           {previous ? previousButton : ""}
