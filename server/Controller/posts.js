@@ -3,12 +3,13 @@ const Posts = require("../Models/AllPosts");
 const {addPostInUser} = require("./auth");
 
 var totalPosts = 0;
-const getAllPosts = async (req,res, id)=>{
+const getAllPosts = async (req,res, id, skips)=>{
     try {
-        const PostsData = await Posts.find({});
+        const PostsCount = await Posts.countDocuments({});
+        const PostsData = await Posts.find({}).sort({_id: -1}).limit(10).skip(Number(skips));
         // console.log(req.session);
         totalPosts = PostsData.length
-        return res.status(200).json({Posts: PostsData, totalPosts: totalPosts, id: id});
+        return res.status(200).json({Posts: PostsData, totalPosts: totalPosts, id: id, PostsCount: PostsCount});
         
     } catch (error) {
         console.log(error)

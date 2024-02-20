@@ -22,8 +22,10 @@ const upload = multer({
 
 const PostRouter = express.Router();
 
-PostRouter.get("/", (req,res)=>{
-  getAllPosts(req,res,req.session._id);
+PostRouter.get("/:count", (req,res)=>{
+  const {count} = req.params;
+  console.log(req.originalUrl);
+  getAllPosts(req,res,req.session._id, count);
 });
 
 PostRouter.post('/upload', async (req, res) => {
