@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { NavLink } from "react-router-dom";
 
 import PostList from "../Components/PostList";
 import { useNavigate } from "react-router-dom";
