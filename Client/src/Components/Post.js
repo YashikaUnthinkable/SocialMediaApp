@@ -9,6 +9,7 @@ export default function Post(props) {
   const [isComment, setIsComment] = useState(false);
   const [comments, setComments] = useState([]);
   const [totalLikes, settotalLikes] = useState(0);
+  const [formattedDate, setFormattedDate] = useState("");
 
   useEffect(() => {
     // Fetch image from the server by image id
@@ -32,6 +33,7 @@ export default function Post(props) {
       setLiked(false);
     }
     settotalLikes(props.post.LikedBy.length);
+    setFormattedDate(setDateData(props.post.createdAt));
   }, []);
 
   // a function to manage the likes and dislike on clicking on button
@@ -75,6 +77,35 @@ export default function Post(props) {
         console.log(res_data);
       }
     }
+  };
+
+  const setDateData = (pdate) => {
+    const mdate = Date.parse(pdate);
+    const milliseconds = Date.now() - mdate;
+    const days = Math.floor(milliseconds / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((milliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((milliseconds % (1000 * 60)) / 1000);
+
+    // Construct a formatted string
+    let formattedString = '';
+    if (days > 0) {
+      formattedString += days + 'd ';
+    } 
+    else if (hours > 0) {
+      formattedString += hours + 'h ';
+    } 
+    else if (minutes > 0) {
+      formattedString += minutes + 'm ';
+    } 
+    else if (seconds > 0) {
+      formattedString += seconds + 's ';
+    } 
+    else {
+      formattedString = "now";
+    }
+
+    return formattedString;
   };
 
   const getComment = () => {
@@ -156,8 +187,9 @@ export default function Post(props) {
         className="shadow-lg col m-4  bg-white rounded"
         style={{ height: "580px" }}
       >
-        <div className="row-3">
-          <div className="p-3">Posted By- {props.post.postedBy}</div>
+        <div className="row-3 row">
+          <div className="p-3 col-10">Posted By- {props.post.postedBy}</div>
+          <div className="p-3 col-2">{formattedDate}</div>
         </div>
         <img
           src={imageSrc}
