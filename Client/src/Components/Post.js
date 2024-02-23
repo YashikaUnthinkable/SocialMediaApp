@@ -12,7 +12,7 @@ export default function Post(props) {
   const [totalLikes, settotalLikes] = useState(0);
   const [formattedDate, setFormattedDate] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [title, setTitle] = useState(props.post.title)
+  const [title, setTitle] = useState(props.post.title);
 
   const handleDivClick = () => {
     setShowModal(true);
@@ -195,41 +195,36 @@ export default function Post(props) {
     </div>
   );
 
-  const handleTitleChange = (e)=>{
+  const handleTitleChange = (e) => {
     let newTitle = e.target.value;
-    if(newTitle == title){
-      return
+    if (newTitle == title) {
+      return;
     }
     setTitle(newTitle);
-  }
-  const handleSubmitTitle = ()=>{
+  };
+  const handleSubmitTitle = () => {
     console.log(title);
-    let body = {pid: props.post.id,
-                title: title}
-    fetch(`/api/posts/updatetitle`,{
+    let body = { pid: props.post.id, title: title };
+    fetch(`/api/posts/updatetitle`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(body),
-
     })
       .then((response) => {
         if (!response.ok) {
           throw new Error("Failed to update title");
-        }
-        else{
+        } else {
           alert("title updated...");
           handleCloseModal();
         }
       })
-      .then((res) => {
-         
-      })
+      .then((res) => {})
       .catch((error) => {
         console.error("Error fetching image:", error);
       });
-  }
+  };
   let editButton = (
     <div>
       <div
@@ -272,13 +267,19 @@ export default function Post(props) {
                   />
                 </div>
 
-                <button className="btn btn-primary col-3" onClick={handleSubmitTitle}>Change title</button>
+                <button
+                  className="btn btn-primary col-3"
+                  onClick={handleSubmitTitle}
+                >
+                  Change title
+                </button>
               </div>
               <img
                 src={imageSrc}
-                className="row-6 img-fluid p-1 rounded"
+                className=" img-fluid p-1 rounded"
                 alt="not available"
                 id={props.post.img}
+                style={{ height: "200px" }}
               />
               <div className="row p-2 ">
                 <div className="col-9">
@@ -314,39 +315,40 @@ export default function Post(props) {
     </div>
   );
   return (
-    <div className="align-items-center justify-content-center w-50">
+    <div
+      className="align-items-center justify-content-center w-50"
+      style={{ padding: "20px" }}
+    >
       <div
-        className="shadow-lg col m-4  bg-white rounded"
-        style={{ height: "580px" }}
+        className="shadow-lg col m-4 bg-white rounded"
+        style={{ maxHeight: "580px", width: "100%" }}
       >
-        <div className="row-3 row">
-          <div className="p-3 col-10">Posted By- {props.post.postedBy}</div>
-          <div className="p-3 col-2">{formattedDate}</div>
+        <div className="d-flex justify-content-between">
+          <div className="p-3">Posted By- {props.post.postedBy}</div>
+          <div className="p-3">{formattedDate}</div>
         </div>
-        <img
-          src={imageSrc}
-          className="row-6 img-fluid p-1 rounded"
-          alt="not available"
-          id={props.post.img}
-        />
-        <div className="row-2 ">
-          <div className="row">
-            <div className="p-3 col-5">
-              <div className="text-danger fs-4 ml-2" onClick={setLike}>
-                {liked ? <FaHeart /> : <FaRegHeart />}
-              </div>
-              {totalLikes} Likes
+        <div className="align-items-center justify-content-center">
+          <img
+            src={imageSrc}
+            className="img-fluid p-1 rounded"
+            alt="not available"
+            id={props.post.img}
+            style={{ maxHeight: "100%", width: "auto" }}
+          />
+        </div>
+        <div className="d-flex justify-content-between">
+          <div className="p-3">
+            <div className="text-danger fs-4 ml-2" onClick={setLike}>
+              {liked ? <FaHeart /> : <FaRegHeart />}
             </div>
-            <div className="p-3 col-5 fs-5" onClick={setCommentBox}>
-              <FaRegCommentDots />
-            </div>
-            <div className="p-3 col-2 fs-5">
-              {props.isProfile ? editButton : ""}
-            </div>
+            {totalLikes} Likes
           </div>
+          <div className="p-3 fs-5" onClick={setCommentBox}>
+            <FaRegCommentDots />
+          </div>
+          <div className="p-3 fs-5">{props.isProfile ? editButton : ""}</div>
         </div>
       </div>
-
       <div className="m-4 bg-white rounded shadow-lg">
         {isComment ? commentBox : ""}
       </div>
