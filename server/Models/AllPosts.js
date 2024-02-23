@@ -12,10 +12,9 @@ const AllPostsSchema = new mongoose.Schema({
     img:{
         type: String,
     },
-    LikedBy: {
-        type: Object,
-        required: true
-    },
+    LikedBy: [{
+        type: String // Assuming liked users are identified by their IDs
+    }],
     postedBy: {
         type: String
     },
@@ -24,7 +23,9 @@ const AllPostsSchema = new mongoose.Schema({
         required: true
     }
 },
-{timestamps: true})
+{timestamps: true});
+
+AllPostsSchema.index({title: 1});
 
 const Posts = mongoose.model("Posts",AllPostsSchema);
 
