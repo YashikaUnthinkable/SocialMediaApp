@@ -13,6 +13,7 @@ export default function Post(props) {
 
   useEffect(() => {
     // Fetch image from the server by image id
+    console.log(props.post.img);
     fetch(`/api/image/${props.post.img}`)
       .then((response) => {
         if (!response.ok) {
@@ -21,7 +22,7 @@ export default function Post(props) {
         return response.blob();
       })
       .then((imageBlob) => {
-        const imageUrl = URL.createObjectURL(imageBlob); // it is user to convert the image to the url
+        const imageUrl = URL.createObjectURL(imageBlob); // it is used to convert the image to the URL
         setImageSrc(imageUrl);
       })
       .catch((error) => {
@@ -34,7 +35,8 @@ export default function Post(props) {
     }
     settotalLikes(props.post.LikedBy.length);
     setFormattedDate(setDateData(props.post.createdAt));
-  }, []);
+  }, [,props.post]); // Add props.title as a dependency
+  
 
   // a function to manage the likes and dislike on clicking on button
   const setLike = async () => {

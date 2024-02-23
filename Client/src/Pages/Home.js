@@ -81,7 +81,6 @@ export default function Home(props) {
   const handleSubmit = ()=>{
     setCount(0);
     fetchPosts();
-    settitle("");
   }
   useEffect(() => {
     window.addEventListener("scroll", handleScroll);
@@ -97,7 +96,7 @@ export default function Home(props) {
       >
         <div className="row pt-2" >
           <div className="col-8 ">
-            <input type="text" className="form-control" onChange={handleInput} value={title}/>
+            <input type="text" className="form-control" onChange={handleInput} value={title} placeholder="Enter your title"/>
           </div>
           <div className="col-1" onClick={handleSubmit}>
             <FaSearch/>
