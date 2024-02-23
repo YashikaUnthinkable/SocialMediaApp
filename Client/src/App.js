@@ -12,6 +12,7 @@ import { BrowserRouter, Route , Routes} from "react-router-dom";//for routing th
 function App(){
   const [isLoggedIn,setLoggedIn] = useState(false);
   const [userId, setUserId] = useState("");
+  const [isProfile, setisProfile] = useState(false);
  
   const handleUserExist = ()=>{
     try{
@@ -47,7 +48,8 @@ function App(){
           <Route path="/" element={<Home
           isLoggedIn={isLoggedIn} 
           userId={userId}
-          setUserId={setUserId}/>}/>
+          setUserId={setUserId}
+          setisProfile= {setisProfile}/>}/>
 
           <Route path="/about" element={<About/>}/>
 
@@ -64,6 +66,8 @@ function App(){
 
           <Route path="/profile" element={<Profile
           isLoggedIn={isLoggedIn}
+          isProfile = {isProfile}
+          setisProfile = {setisProfile}
 />}/>
 
           <Route path="/logout" element={<Logout 

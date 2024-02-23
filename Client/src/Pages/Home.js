@@ -15,6 +15,7 @@ export default function Home(props) {
   const containerRef = useRef(null);
 
   useEffect(() => {
+    props.setisProfile(false);
     fetchPosts();
   }, [count]);
 

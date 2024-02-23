@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PostList from "../Components/PostList";
-import CommentList from "../Components/CommentList";
 
 function Profile(props) {
   const [file, setFile] = useState(null);
@@ -17,6 +16,7 @@ function Profile(props) {
   }
   useEffect(() => {
     console.log("Profile page");
+    props.setisProfile(true);
     fetch("/api/userData", {
       method: "GET",
     })
@@ -97,8 +97,8 @@ function Profile(props) {
             required="true"
             id="title"/>
           </div>
-
-          <button type="submit" className="btn btn-primary col-2">
+          <div className="col-1"></div>
+          <button type="submit" className="btn btn-primary col-1">
             Upload
           </button>
         </form>
@@ -112,6 +112,7 @@ function Profile(props) {
               // userId={props.userId}
               comments={props.comments}
               setComments={props.setComments}
+              isProfile = {props.isProfile}
             />
           </div>
       </div>

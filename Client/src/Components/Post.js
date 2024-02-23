@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { FaHeart } from "react-icons/fa";
 import { FaRegHeart, FaRegCommentDots } from "react-icons/fa";
 import CommentList from "./CommentList";
+import { RiEdit2Fill } from "react-icons/ri";
 
 export default function Post(props) {
   let [liked, setLiked] = useState(false);
@@ -10,10 +11,18 @@ export default function Post(props) {
   const [comments, setComments] = useState([]);
   const [totalLikes, settotalLikes] = useState(0);
   const [formattedDate, setFormattedDate] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [title, setTitle] = useState(props.post.title)
 
-  useEffect(() => {
-    // Fetch image from the server by image id
-    console.log(props.post.img);
+  const handleDivClick = () => {
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
+  const fetchImage = () => {
     fetch(`/api/image/${props.post.img}`)
       .then((response) => {
         if (!response.ok) {
@@ -28,6 +37,11 @@ export default function Post(props) {
       .catch((error) => {
         console.error("Error fetching image:", error);
       });
+  };
+  useEffect(() => {
+    // Fetch image from the server by image id
+    console.log(props.post.img);
+    fetchImage();
     if (props.post.LikedBy.indexOf(props.userId) !== -1) {
       setLiked(true);
     } else {
@@ -35,8 +49,7 @@ export default function Post(props) {
     }
     settotalLikes(props.post.LikedBy.length);
     setFormattedDate(setDateData(props.post.createdAt));
-  }, [,props.post]); // Add props.title as a dependency
-  
+  }, [, props.post]); // Add props.title as a dependency
 
   // a function to manage the likes and dislike on clicking on button
   const setLike = async () => {
@@ -85,25 +98,23 @@ export default function Post(props) {
     const mdate = Date.parse(pdate);
     const milliseconds = Date.now() - mdate;
     const days = Math.floor(milliseconds / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((milliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const hours = Math.floor(
+      (milliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    );
     const minutes = Math.floor((milliseconds % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.floor((milliseconds % (1000 * 60)) / 1000);
 
     // Construct a formatted string
-    let formattedString = '';
+    let formattedString = "";
     if (days > 0) {
-      formattedString += days + 'd ';
-    } 
-    else if (hours > 0) {
-      formattedString += hours + 'h ';
-    } 
-    else if (minutes > 0) {
-      formattedString += minutes + 'm ';
-    } 
-    else if (seconds > 0) {
-      formattedString += seconds + 's ';
-    } 
-    else {
+      formattedString += days + "d ";
+    } else if (hours > 0) {
+      formattedString += hours + "h ";
+    } else if (minutes > 0) {
+      formattedString += minutes + "m ";
+    } else if (seconds > 0) {
+      formattedString += seconds + "s ";
+    } else {
       formattedString = "now";
     }
 
@@ -183,6 +194,125 @@ export default function Post(props) {
       </div>
     </div>
   );
+
+  const handleTitleChange = (e)=>{
+    let newTitle = e.target.value;
+    if(newTitle == title){
+      return
+    }
+    setTitle(newTitle);
+  }
+  const handleSubmitTitle = ()=>{
+    console.log(title);
+    let body = {pid: props.post.id,
+                title: title}
+    fetch(`/api/posts/updatetitle`,{
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(body),
+
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed to update title");
+        }
+        else{
+          alert("title updated...");
+          handleCloseModal();
+        }
+      })
+      .then((res) => {
+         
+      })
+      .catch((error) => {
+        console.error("Error fetching image:", error);
+      });
+  }
+  let editButton = (
+    <div>
+      <div
+        data-toggle="modal"
+        data-target="#exampleModal"
+        style={{ cursor: "pointer" }}
+        onClick={handleDivClick}
+      >
+        <RiEdit2Fill />
+      </div>
+      {/* Bootstrap modal */}
+      <div
+        className={`modal ${showModal ? "show" : ""}`}
+        style={{ display: showModal ? "block" : "none" }}
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Edit the Post</h5>
+              <button
+                type="button"
+                className="close"
+                onClick={handleCloseModal}
+              >
+                <span>&times;</span>
+              </button>
+            </div>
+            <div className="modal-body">
+              <div className="row p-2">
+                <label htmlFor="title" className="col-2">
+                  title:
+                </label>
+                <div className="col-7">
+                  <input
+                    type="text"
+                    value={title}
+                    id="title"
+                    className="form-control"
+                    onChange={handleTitleChange}
+                  />
+                </div>
+
+                <button className="btn btn-primary col-3" onClick={handleSubmitTitle}>Change title</button>
+              </div>
+              <img
+                src={imageSrc}
+                className="row-6 img-fluid p-1 rounded"
+                alt="not available"
+                id={props.post.img}
+              />
+              <div className="row p-2 ">
+                <div className="col-9">
+                  <input
+                    type="file"
+                    className="form-control"
+                    // onChange={handleFileChange}
+                    id="image"
+                  />
+                </div>
+                <button className="col-2 btn btn-primary">Change</button>
+              </div>
+            </div>
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={handleCloseModal}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* Overlay */}
+      {showModal && (
+        <div
+          className="modal-backdrop fade show"
+          onClick={handleCloseModal}
+        ></div>
+      )}
+    </div>
+  );
   return (
     <div className="align-items-center justify-content-center w-50">
       <div
@@ -202,13 +332,16 @@ export default function Post(props) {
         <div className="row-2 ">
           <div className="row">
             <div className="p-3 col-5">
-              <div className="text-danger fs-4" onClick={setLike}>
+              <div className="text-danger fs-4 ml-2" onClick={setLike}>
                 {liked ? <FaHeart /> : <FaRegHeart />}
               </div>
               {totalLikes} Likes
             </div>
             <div className="p-3 col-5 fs-5" onClick={setCommentBox}>
               <FaRegCommentDots />
+            </div>
+            <div className="p-3 col-2 fs-5">
+              {props.isProfile ? editButton : ""}
             </div>
           </div>
         </div>

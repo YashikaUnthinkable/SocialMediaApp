@@ -59,9 +59,22 @@ const UpdateLikeDislikeOnPosts = async (req,res,id)=>{
 }
 
 
+const UpdateTitle = async (req,res)=>{
+    try{
+        const {pid, title} = req.body;
+    const PostData = await Posts.findOneAndUpdate({id: pid},{title: title})
+    console.log(PostData);
+    return res.status(200).json({"msg": "success"})
+    }
+    catch(error){
+        console.log(error);
+    }
+    
+}
+
 
 const handletotalPosts = ()=>{
     return PostsCount;
 }
 
-module.exports = {getAllPosts, uploadPost,handletotalPosts,UpdateLikeDislikeOnPosts};
+module.exports = {getAllPosts, uploadPost,handletotalPosts,UpdateLikeDislikeOnPosts, UpdateTitle};

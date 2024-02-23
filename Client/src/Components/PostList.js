@@ -13,6 +13,7 @@ export default function PostList(props) {
           data={props.data}
           setData={props.setData}
           userId= {props.userId}
+          isProfile = {props.isProfile}
         />
       );
     })

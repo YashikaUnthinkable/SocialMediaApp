@@ -1,5 +1,5 @@
 const express = require("express");
-const { getAllPosts, uploadPost ,handletotalPosts,UpdateLikeDislikeOnPosts} = require("../Controller/posts");
+const { getAllPosts, uploadPost ,handletotalPosts,UpdateLikeDislikeOnPosts,UpdateTitle} = require("../Controller/posts");
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -52,6 +52,10 @@ PostRouter.patch("/LikesDisLikes",(req,res)=>{
   console.log(req.session);
   console.log(req.body);
   UpdateLikeDislikeOnPosts(req,res,req.session._id);
+})
+
+PostRouter.patch("/updatetitle",(req,res)=>{
+  UpdateTitle(req,res);
 })
 
 module.exports = PostRouter;
