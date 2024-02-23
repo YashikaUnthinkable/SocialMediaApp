@@ -21,13 +21,17 @@ export default function Comment(props) {
     let formattedString = '';
     if (days > 0) {
       formattedString += days + 'd ';
-    } else if (hours > 0) {
+    } 
+    else if (hours > 0) {
       formattedString += hours + 'h ';
-    } else if (minutes > 0) {
+    } 
+    else if (minutes > 0) {
       formattedString += minutes + 'm ';
-    } else if (seconds > 0) {
+    } 
+    else if (seconds > 0) {
       formattedString += seconds + 's ';
-    } else {
+    } 
+    else {
       formattedString = "now";
     }
 

@@ -5,6 +5,10 @@ const AllPostsSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    title:{
+        type: String, 
+        required: true
+    },
     img:{
         type: String,
     },
@@ -14,8 +18,13 @@ const AllPostsSchema = new mongoose.Schema({
     },
     postedBy: {
         type: String
+    },
+    postedById:{
+        type: String,
+        required: true
     }
-})
+},
+{timestamps: true})
 
 const Posts = mongoose.model("Posts",AllPostsSchema);
 

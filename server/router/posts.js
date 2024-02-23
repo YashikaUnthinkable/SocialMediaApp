@@ -1,5 +1,5 @@
 const express = require("express");
-const { getAllPosts, addtoPost ,handletotalPosts,UpdatePosts} = require("../Controller/posts");
+const { getAllPosts, uploadPost ,handletotalPosts,UpdateLikeDislikeOnPosts} = require("../Controller/posts");
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
@@ -28,6 +28,12 @@ PostRouter.get("/:count", (req,res)=>{
   getAllPosts(req,res,req.session._id, count);
 });
 
+PostRouter.get("/:count/:title",(req,res)=>{
+  const {count,title} = req.params;
+  console.log(req.originalUrl);
+  getAllPosts(req,res,req.session._id, count,title);
+})
+
 PostRouter.post('/upload', async (req, res) => {
   
   upload(req, res, (err) => {
@@ -36,7 +42,7 @@ PostRouter.post('/upload', async (req, res) => {
       console.error(err);
       res.status(400).json({ error: 'Failed to upload file' });
     } else {
-      addtoPost(req,res,req.session.user,req.session._id);
+      uploadPost(req,res,req.session.user,req.session._id);
       res.status(200).json({ filename: req.file.filename }); // Return the filename of the uploaded file
     }
   });
@@ -45,7 +51,7 @@ PostRouter.post('/upload', async (req, res) => {
 PostRouter.patch("/LikesDisLikes",(req,res)=>{
   console.log(req.session);
   console.log(req.body);
-  UpdatePosts(req,res,req.session._id);
+  UpdateLikeDislikeOnPosts(req,res,req.session._id);
 })
 
 module.exports = PostRouter;

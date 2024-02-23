@@ -1,13 +1,19 @@
 const Posts = require("../Models/AllPosts");
-// const {addtoPostLiked} = require("./auth");
-const {addPostInUser} = require("./auth");
 
 var totalPosts = 0;
-const getAllPosts = async (req,res, id, skips)=>{
+var PostsCount = 0
+const getAllPosts = async (req,res, id, skips,title)=>{
+
     try {
-        const PostsCount = await Posts.countDocuments({});
-        const PostsData = await Posts.find({}).sort({_id: -1}).limit(10).skip(Number(skips));
-        // console.log(req.session);
+        PostsCount = await Posts.countDocuments({});
+        let PostsData = "";
+        if(title){
+            PostsData = await Posts.find({title: title}).sort({_id: -1}).limit(10).skip(Number(skips));
+            
+        }
+        else{
+            PostsData = await Posts.find({}).sort({_id: -1}).limit(10).skip(Number(skips));
+        }
         totalPosts = PostsData.length
         return res.status(200).json({Posts: PostsData, totalPosts: totalPosts, id: id, PostsCount: PostsCount});
         
@@ -16,24 +22,27 @@ const getAllPosts = async (req,res, id, skips)=>{
     }
 }
 
-const addtoPost = async (req,res,user,id)=>{
+
+const uploadPost = async (req,res,user,id)=>{
     try{
+        console.log(req.body);
         console.log(req.file.filename);
-        let pid = "P"+Number(totalPosts+1)
+        let pid = "P"+Number(PostsCount+1)
         const postCreated = await Posts.create({
             id: pid,
             img: req.file.filename.replace(".jpg",""),
+            title: req.body.title,
             LikedBy: [],
-            postedBy: user
+            postedBy: user,
+            postedById: id
         });
         console.log(postCreated);
-        addPostInUser(pid,id);
     } catch(error){
         console.log(error);
     }
 }
 
-const UpdatePosts = async (req,res,id)=>{
+const UpdateLikeDislikeOnPosts = async (req,res,id)=>{
     try {
         if(req.body.liked){
             console.log("Yes");
@@ -52,7 +61,7 @@ const UpdatePosts = async (req,res,id)=>{
 
 
 const handletotalPosts = ()=>{
-    return totalPosts;
+    return PostsCount;
 }
 
-module.exports = {getAllPosts, addtoPost,handletotalPosts,UpdatePosts};
+module.exports = {getAllPosts, uploadPost,handletotalPosts,UpdateLikeDislikeOnPosts};

@@ -6,7 +6,6 @@ import { NavLink } from "react-router-dom";
 
 export default function Navbar(props) {
   console.log("navbar:",props.isLoggedIn);
-
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
@@ -32,7 +31,6 @@ export default function Navbar(props) {
                   Contact
                 </NavLink> 
               </li>
-              
               <li className="nav-item ">
                 <NavLink className="nav-link " to={(props.isLoggedIn) ? "/logout" : "/register"} aria-expanded="false">
                   {props.isLoggedIn? "Logout" : "SignUp"}

@@ -55,10 +55,7 @@ app.get("/api/userData", async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    const posts = await user.Posts; // Assuming Posts is an array field in the user document
-    console.log("User posts:", posts);
-
-    const postsData = await Posts.find({ id: { $in: posts } });
+    const postsData = await Posts.find({ postedById: req.session._id });
     console.log("Posts data:", postsData);
 
     res.status(200).json({ user: user, data: postsData });
@@ -77,46 +74,41 @@ app.post("/api/logout",(req,res)=>{
     console.log(err);
   }
 });
-const imageSchema = new mongoose.Schema({
-  imageUrl: String,
-});
 
-// Create a model based on the schema
-// const Image = mongoose.model('Image', imageSchema);
 
-// Set up multer to handle file uploads
-const storage = multer.diskStorage({
-  destination: './images/',
-  filename: function(req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
-  }
-});
 
-const upload = multer({ 
-  storage: storage,
-  limits: { fileSize: 1000000 } // 1 MB limit
-}).single('image');
+// const storage = multer.diskStorage({
+//   destination: './images/',
+//   filename: function(req, file, cb) {
+//     cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+//   }
+// });
 
-// Route to handle image upload
-app.post('/api/upload', (req, res) => {
-  console.log(req.body);
-  upload(req, res, async (err) => {
-    if (err) {
-      return res.status(400).json({ error: err.message });
-    }
+// const upload = multer({ 
+//   storage: storage,
+//   limits: { fileSize: 1000000 } // 1 MB limit
+// }).single('image');
 
-    try {
-      const newImage = new Image({
-        imageUrl: req.file.path
-      });
-      await newImage.save();
-      res.json({ imageUrl: req.file.path });
-    } catch (error) {
-      console.error('Error saving image to database:', error);
-      res.status(500).json({ error: 'Failed to save image to database' });
-    }
-  });
-});
+// // Route to handle image upload
+// app.post('/api/upload', (req, res) => {
+//   console.log(req.body);
+//   upload(req, res, async (err) => {
+//     if (err) {
+//       return res.status(400).json({ error: err.message });
+//     }
+
+//     try {
+//       const newImage = new Image({
+//         imageUrl: req.file.path
+//       });
+//       await newImage.save();
+//       res.json({ imageUrl: req.file.path });
+//     } catch (error) {
+//       console.error('Error saving image to database:', error);
+//       res.status(500).json({ error: 'Failed to save image to database' });
+//     }
+//   });
+// });
 
 // Route to get all images
 app.get('/api/images', async (req, res) => {

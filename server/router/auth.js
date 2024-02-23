@@ -44,10 +44,6 @@ router.post("/login" , async(req , res) => {
         res.status(500).json({ msg: "Internal server error" });
       }
 });
-// router.get("/postsLiked",(req,res)=>{
-//   console.log(req.session);
-//   PostsLiked(req,res,req.session._id);
-//   res.send({"msg": "success"})
-// }) 
+ 
 
 module.exports = router;

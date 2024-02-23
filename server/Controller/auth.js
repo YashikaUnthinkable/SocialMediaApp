@@ -29,7 +29,6 @@ const register = async (req, res) => {
       username,
       email,
       password: hash_password,
-      Posts: []
     });
     console.log(UserCreated);
 
@@ -45,13 +44,7 @@ const login = async (req, res) => {
   
 };
 
-const addPostInUser = async (pid,id)=>{
-  console.log(pid);
-  console.log(id);
-  const userExist = await User.findOneAndUpdate({_id: id},{$push: {Posts :pid}});
-  console.log(userExist);
-}
 
 
 
-module.exports = { home, register, login ,addPostInUser};
+module.exports = { home, register, login};

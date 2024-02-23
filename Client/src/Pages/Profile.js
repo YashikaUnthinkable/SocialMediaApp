@@ -5,12 +5,16 @@ import CommentList from "../Components/CommentList";
 
 function Profile(props) {
   const [file, setFile] = useState(null);
+  const [title, settitle] = useState("");
   const [userData, setUserData] = useState([]);
   const [data, setData] = useState([]);
   const nevigate = useNavigate();
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
+  const handleTitleChange = (e)=>{
+    settitle(e.target.value);
+  }
   useEffect(() => {
     console.log("Profile page");
     fetch("/api/userData", {
@@ -38,6 +42,7 @@ function Profile(props) {
 
     const formData = new FormData();
     formData.append("image", file);
+    formData.append("title", title);
 
     try {
       const response = await fetch("/api/posts/upload", {
@@ -68,15 +73,32 @@ function Profile(props) {
         </div>
         <h4>Upload a new Post</h4>
         <form onSubmit={handleSubmit} className="row">
-          <div className="col-5">
+          <div className="col-1">
+            <label htmlFor="image"
+            className="float-right">Image: </label>
+          </div>
+          <div className="col-3">
             <input
               type="file"
               className="form-control"
               onChange={handleFileChange}
+              id = "image"
+              required="true"
             />
           </div>
+          <div className="col-1"></div>
+          <div className="col-1">
+          <label htmlFor="title">Title: </label>
+          </div>
+          <div className="col-3">
+            <input type="text" 
+            className="form-control"
+            onChange= {handleTitleChange} 
+            required="true"
+            id="title"/>
+          </div>
 
-          <button type="submit" className="btn btn-primary col-3">
+          <button type="submit" className="btn btn-primary col-2">
             Upload
           </button>
         </form>
