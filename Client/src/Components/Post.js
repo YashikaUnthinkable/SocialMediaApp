@@ -13,6 +13,7 @@ export default function Post(props) {
   const [formattedDate, setFormattedDate] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [title, setTitle] = useState(props.post.title);
+  const [file, setFile] = useState(null);
 
   const handleDivClick = () => {
     setShowModal(true);
@@ -202,6 +203,7 @@ export default function Post(props) {
     }
     setTitle(newTitle);
   };
+
   const handleSubmitTitle = () => {
     console.log(title);
     let body = { pid: props.post.id, title: title };
@@ -225,6 +227,40 @@ export default function Post(props) {
         console.error("Error fetching image:", error);
       });
   };
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
+  const handleSubmitImage = async () => {
+    if (!file) {
+      console.error("No file selected.");
+      return;
+    }
+
+    const formData = new FormData();
+
+    formData.append("image", file, `${props.post.img}.jpg`);
+
+    try {
+      const response = await fetch("/api/posts/updateImage", {
+        method: "PATCH",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload image");
+      }
+
+      const data = await response.json();
+      console.log("File uploaded: "+ data);
+
+      alert("Image Updated");
+      handleCloseModal();
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
+  };
+
   let editButton = (
     <div>
       <div
@@ -286,11 +322,16 @@ export default function Post(props) {
                   <input
                     type="file"
                     className="form-control"
-                    // onChange={handleFileChange}
+                    onChange={handleFileChange}
                     id="image"
                   />
                 </div>
-                <button className="col-2 btn btn-primary">Change</button>
+                <button
+                  className="col-2 btn btn-primary"
+                  onClick={handleSubmitImage}
+                >
+                  Change
+                </button>
               </div>
             </div>
             <div className="modal-footer">
@@ -314,6 +355,7 @@ export default function Post(props) {
       )}
     </div>
   );
+
   return (
     <div
       className="align-items-center justify-content-center w-50"

@@ -14,9 +14,23 @@ const storage = multer.diskStorage({
   }
 });
 
+const storage2 = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null,path.join(__dirname +'/..'+'/images/')); // Specify the destination folder
+  },
+  filename: function(req, file, cb) {
+    console.log(file.originalname);
+    cb(null, file.originalname); // Generate unique filename
+  }
+})
 // Initialize multer
 const upload = multer({
   storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 }
+}).single('image'); // Name of the field in the form
+
+const upload2 = multer({
+  storage: storage2,
   limits: { fileSize: 5 * 1024 * 1024 }
 }).single('image'); // Name of the field in the form
 
@@ -56,6 +70,18 @@ PostRouter.patch("/LikesDisLikes",(req,res)=>{
 
 PostRouter.patch("/updatetitle",(req,res)=>{
   UpdateTitle(req,res);
+})
+
+PostRouter.patch("/updateImage",async (req, res) => {  
+  upload2(req, res, (err) => {
+    console.log(handletotalPosts());
+    if (err) {
+      console.error(err);
+      res.status(400).json({ error: 'Failed to upload file' });
+    } else {
+      res.status(200).json({ filename: req.file.filename}); // Return the filename of the uploaded file
+    }
+  });
 })
 
 module.exports = PostRouter;
