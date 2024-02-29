@@ -25,7 +25,7 @@ const AllPostsSchema = new mongoose.Schema({
 },
 {timestamps: true});
 
-AllPostsSchema.index({title: 1});
+AllPostsSchema.index({title: "text"});
 
 const Posts = mongoose.model("Posts",AllPostsSchema);
 

@@ -8,7 +8,7 @@ const getAllPosts = async (req,res, id, skips,title)=>{
         PostsCount = await Posts.countDocuments({});
         let PostsData = "";
         if(title){
-            PostsData = await Posts.find({title: title}).sort({_id: -1}).limit(10).skip(Number(skips));
+            PostsData = await Posts.find({ $text: { $search: title } }).sort({_id: -1}).limit(10).skip(Number(skips));
             
         }
         else{
@@ -63,7 +63,6 @@ const UpdateTitle = async (req,res)=>{
     try{
         const {pid, title} = req.body;
     const PostData = await Posts.findOneAndUpdate({id: pid},{title: title})
-    console.log(PostData);
     return res.status(200).json({"msg": "success"})
     }
     catch(error){
